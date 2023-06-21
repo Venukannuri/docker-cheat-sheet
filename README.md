@@ -21,6 +21,12 @@ Learn Docker for Beginners
     - **[Bind Mounts](#bind-mounts)**
     - **[tmpfs Mounts](#tmpfs-mounts)**
   - **[Good Use case for Volumes](#good-use-case-for-volumes)**
+- **[Docker Compose](#docker-compose)**
+  - **[Docker Compose overview](#docker-compose-overview)**
+    - **[Have multiple isolated environments on a single host](#have-multiple-isolated-environments-on-a-single-host)**
+    - **[Preserves volume data when containers are created](#preserves-volume-data-when-containers-are-created)**
+    - **[Only recreate containers that have changed](#only-recreate-containers-that-have-changed)**
+    - **[Supports variables and moving a composition between environments](#supports-variables-and-moving-a-composition-between-environments)**
 
 # Introduction
 
@@ -391,6 +397,23 @@ $ docker push username/repository:tagear
 
 Once uploaded, we can see it on the [Docker Hub](https://hub.docker.com/ "Docker Hub") website.
 
+- **RUN**
+
+```shell
+Mainly used to build images and install applications and packages. Builds a new layer over an existing image by committing the results.
+```
+
+- **CMD**
+
+```shell
+Sets default parameters that can be overridden from the Docker Command Line Interface (CLI) when a container is running.
+```
+- **ENTRYPOINT**
+
+```shell
+Default parameters that cannot be overridden when Docker Containers run with CLI parameters.
+```
+
 # Volumes
 
 **References:**
@@ -458,3 +481,41 @@ An easy way to visualize the difference between `volumes`, `bind mounts`, and `t
 **Volumes are the preferred way to persist data** in Docker containers and services. Some use cases for volumes include:
 
 - Sharing data among multiple running containers. If you don't explicitly create it, a volume is created the first time it is mounted into a container. When that container stops or is removed, the **volume still
+
+# Docker Compose
+
+### Docker Compose overview
+
+  Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration.
+
+  Compose works in all environments: production, staging, development, testing, as well as CI workflows. It also has commands for managing the whole lifecycle of your application:
+
+- Start, stop, and rebuild services
+- View the status of running services
+- Stream the log output of running services
+- Run a one-off command on a service
+- The key features of Compose that make it effective are:
+
+
+### Have multiple isolated environments on a single host
+Compose uses a project name to isolate environments from each other. You can make use of this project name in several different contexts:
+
+on a dev host, to create multiple copies of a single environment, such as when you want to run a stable copy for each feature branch of a project
+on a CI server, to keep builds from interfering with each other, you can set the project name to a unique build number
+on a shared host or dev host, to prevent different projects, which may use the same service names, from interfering with each other
+The default project name is the basename of the project directory. You can set a custom project name by using the `-p` command line option or the `COMPOSE_PROJECT_NAME` environment variable.
+
+The default project directory is the base directory of the Compose file. A custom value for it can be defined with the --project-directory command line option.
+
+### Preserves volume data when containers are created
+Compose preserves all volumes used by your services. When `docker compose` up runs, if it finds any containers from previous runs, it copies the volumes from the old container to the new container. This process ensures that any data you’ve created in volumes isn’t lost.
+
+If you use `docker compose` on a Windows machine, see Environment variables and adjust the necessary environment variables for your specific needs.
+
+### Only recreate containers that have changed
+Compose caches the configuration used to create a container. When you restart a service that has not changed, Compose re-uses the existing containers. Re-using containers means that you can make changes to your environment very quickly.
+
+### Supports variables and moving a composition between environments
+Compose supports variables in the Compose file. You can use these variables to customize your composition for different environments, or different users. See Variable substitution for more details.
+
+You can extend a Compose file using the `extends` field or by creating multiple Compose files. See extends for more details.
