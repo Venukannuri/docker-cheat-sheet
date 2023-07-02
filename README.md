@@ -29,6 +29,7 @@ Learn Docker for Beginners
     - **[Supports variables and moving a composition between environments](#supports-variables-and-moving-a-composition-between-environments)**
     - **[Basic Example](#basic-example)**
     - **[Benefits](#benefits)**
+- **[Docker Registry](#docker-registry)**
 
 # Introduction
 
@@ -581,16 +582,6 @@ docker-compose up
 docker-compose down
 ```
 
-```shell
-docker-compose start
-docker-compose stop
-docker-compose pause
-docker-compose unpause
-docker-compose ps
-docker-compose up
-docker-compose down
-```
-
 ### Building
 
 ```yaml
@@ -822,3 +813,68 @@ user: 0:0
 * Security - All the containers are isolated from each other, reducing the threat landscape
 
 
+# Docker Registry
+
+### What is Docker Registry ?
+A Docker registry is a system for storing and distributing Docker images with specific names. There may be several versions of the same image, each with its own set of tags. A Docker registry is separated into Docker repositories, each of which holds all image modifications. The registry may be used by Docker users to fetch images locally and to push new images to the registry (given adequate access permissions when applicable). The registry is a server-side application that stores and distributes Docker images. It is stateless and extremely scalable.
+
+### Uses of Docker Registry
+
+1. Our images can be stored in the Docker registry.
+2. We can automate the development.
+3. With the help of a private docker registry, we can secure our image.
+
+### Different Types of Docker Registries
+
+* DockerHub
+* Amazon Elastic Container Registry (ECR)
+* Google Container Registry (GCR)
+* Azure Container Registry (ACR)
+
+###  Basic commands
+
+```sh
+❯ docker login --username iamvkannuri
+Password:
+Login Succeeded
+
+Logging in with your password grants your terminal complete access to your account.
+For better security, log in with a limited-privilege personal access token. Learn more at https://docs.docker.com/go/access-tokens/
+
+
+❯ docker images
+REPOSITORY                                TAG                                        IMAGE ID       CREATED         SIZE
+jenkins/jenkins                           latest                                     33853f57bba5   4 days ago      452MB
+sonarqube                                 community                                  aaedd4f6bbfd   11 days ago     695MB
+registry                                  2                                          daace2c8ce4c   2 weeks ago     23.8MB
+ubuntu                                    latest                                     cfb01e8e3121   3 weeks ago     69.2MB
+localhost:5000/my-ubuntu                  latest                                     cfb01e8e3121   3 weeks ago     69.2MB
+docker/desktop-vpnkit-controller          dc331cb22850be0cdd97c84a9cfecaf44a1afb6e   3750dfec169f   6 weeks ago     35MB
+registry.k8s.io/kube-apiserver            v1.25.4                                    8e49cdf98f4d   7 months ago    123MB
+registry.k8s.io/kube-proxy                v1.25.4                                    754f6cdb0cbb   7 months ago    58MB
+registry.k8s.io/kube-controller-manager   v1.25.4                                    829662131775   7 months ago    113MB
+registry.k8s.io/kube-scheduler            v1.25.4                                    0d46ff411d67   7 months ago    49.3MB
+registry.k8s.io/etcd                      3.5.5-0                                    b9a1dfeddea9   9 months ago    179MB
+registry.k8s.io/pause                     3.8                                        4e42fb3c9d90   12 months ago   514kB
+registry.k8s.io/coredns/coredns           v1.9.3                                     b19406328e70   13 months ago   47.7MB
+postgres                                  9.6                                        a3268b800968   16 months ago   191MB
+docker/desktop-storage-provisioner        v2.0                                       c027a58fa0bb   2 years ago     39.8MB
+
+❯ docker tag 33853f57bba5 iamvkannuri/jenkins:1.0
+❯ docker push iamvkannuri/jenkins:1.0
+The push refers to repository [docker.io/iamvkannuri/jenkins]
+ee359a6c044b: Mounted from jenkins/jenkins
+b349dc938cfb: Mounted from jenkins/jenkins
+e1cfbf648080: Mounted from jenkins/jenkins
+d1155637d568: Mounted from jenkins/jenkins
+86b67bde97e1: Mounted from jenkins/jenkins
+5fbe778ac59c: Mounted from jenkins/jenkins
+d91ac33ed445: Mounted from jenkins/jenkins
+7de49b8abfbd: Mounted from jenkins/jenkins
+b5cd11916045: Mounted from jenkins/jenkins
+439469b91921: Mounted from jenkins/jenkins
+a00f2162151b: Mounted from jenkins/jenkins
+83553316c94a: Mounted from jenkins/jenkins
+10a3c20c016d: Mounted from jenkins/jenkins
+1.0: digest: sha256:21107bb241eb8da7e7c61811e9bdcaa281ed55db27796392b19c485d158d0808 size: 3040
+```
