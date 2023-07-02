@@ -27,8 +27,13 @@ Learn Docker for Beginners
     - **[Preserves volume data when containers are created](#preserves-volume-data-when-containers-are-created)**
     - **[Only recreate containers that have changed](#only-recreate-containers-that-have-changed)**
     - **[Supports variables and moving a composition between environments](#supports-variables-and-moving-a-composition-between-environments)**
+    - **[Basic Example](#basic-example)**
+    - **[Benefits](#benefits)**
+    - **[Basic Commands](#basic-commands)**
 
 # Introduction
+
+--- 
 
 ### What is Docker?
 
@@ -111,9 +116,13 @@ Docker Engine combines the namespaces, control groups, and UnionFS into a wrappe
 
 # Installation
 
+--- 
+
 When we talk about "install docker" we are referring to installing "Docker Engine". To do this, we will do it by following the steps indicated in the [Official Documentation](https://docs.docker.com/engine/installation/).
 
 # Containers
+
+--- 
 
 A container is a runnable instance of an image. You can create, start, stop, move, or delete a container using the Docker API or CLI. You can connect a container to one or more networks, attach storage to it, or even create a new image based on its current state.
 
@@ -274,6 +283,8 @@ $ docker port <container_name>
 
 # Images
 
+--- 
+
 - See list of images:
 
 ```shell
@@ -416,6 +427,8 @@ Default parameters that cannot be overridden when Docker Containers run with CLI
 
 # Volumes
 
+--- 
+
 **References:**
 
 - [Docker Volumes Tutorial](http://containertutorials.com/volumes.html "Docker Volumes Tutorial")
@@ -484,6 +497,8 @@ An easy way to visualize the difference between `volumes`, `bind mounts`, and `t
 
 # Docker Compose
 
+--- 
+
 ### Docker Compose overview
 
   Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration.
@@ -519,3 +534,293 @@ Compose caches the configuration used to create a container. When you restart a 
 Compose supports variables in the Compose file. You can use these variables to customize your composition for different environments, or different users. See Variable substitution for more details.
 
 You can extend a Compose file using the `extends` field or by creating multiple Compose files. See extends for more details.
+
+### References
+
+--- 
+Please click on the links below for further reference:
+
+* [Docker Compose](https://docs.docker.com/compose/) 
+* [Commandline Compose](https://docs.docker.com/engine/reference/commandline/compose/)
+
+
+### Basic Example
+
+```yaml
+# docker-compose.yml
+version: '2'
+
+services:
+  web:
+    build:
+    # build from Dockerfile
+      context: ./Path
+      dockerfile: Dockerfile
+    ports:
+     - "5000:5000"
+    volumes:
+     - .:/code
+  redis:
+    image: redis
+```
+
+### Commands
+
+```sh
+docker-compose start
+docker-compose stop
+```
+
+```sh
+docker-compose pause
+docker-compose unpause
+```
+
+```sh
+docker-compose ps
+docker-compose up
+docker-compose down
+```
+
+### Building
+
+```yaml
+web:
+  # build from Dockerfile
+  build: .
+  args:     # Add build arguments
+    APP_HOME: app
+```
+
+```yaml
+  # build from custom Dockerfile
+  build:
+    context: ./dir
+    dockerfile: Dockerfile.dev
+```
+
+```yaml
+  # build from image
+  image: ubuntu
+  image: ubuntu:14.04
+  image: tutum/influxdb
+  image: example-registry:4000/postgresql
+  image: a4bc65fd
+```
+
+### Ports
+
+```yaml
+  ports:
+    - "3000"
+    - "8000:80"  # host:container
+```
+
+```yaml
+  # expose ports to linked services (not to host)
+  expose: ["3000"]
+```
+
+### Commands
+
+```yaml
+  # command to execute
+  command: bundle exec thin -p 3000
+  command: [bundle, exec, thin, -p, 3000]
+```
+
+```yaml
+  # override the entrypoint
+  entrypoint: /app/start.sh
+  entrypoint: [php, -d, vendor/bin/phpunit]
+```
+
+### Environment variables
+
+```yaml
+  # environment vars
+  environment:
+    RACK_ENV: development
+  environment:
+    - RACK_ENV=development
+```
+
+```yaml
+  # environment vars from file
+  env_file: .env
+  env_file: [.env, .development.env]
+```
+
+### Dependencies
+
+```yaml
+  # makes the `db` service available as the hostname `database`
+  # (implies depends_on)
+  links:
+    - db:database
+    - redis
+```
+
+```yaml
+  # make sure `db` is alive before starting
+  depends_on:
+    - db
+```
+
+```yaml
+  # make sure `db` is healty before starting
+  # and db-init completed without failure
+  depends_on:
+    db:
+      condition: service_healthy
+    db-init:
+      condition: service_completed_successfully
+```
+
+### Other options
+
+```yaml
+  # make this service extend another
+  extends:
+    file: common.yml  # optional
+    service: webapp
+```
+
+```yaml
+  volumes:
+    - /var/lib/mysql
+    - ./_data:/var/lib/mysql
+```
+
+```yaml
+  # automatically restart container
+  restart: unless-stopped
+  # always, on-failure, no (default)
+```
+
+## Advanced features
+
+### Labels
+
+```yaml
+services:
+  web:
+    labels:
+      com.example.description: "Accounting web app"
+```
+
+### DNS servers
+
+```yaml
+services:
+  web:
+    dns: 8.8.8.8
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+```
+
+### Devices
+
+```yaml
+services:
+  web:
+    devices:
+    - "/dev/ttyUSB0:/dev/ttyUSB0"
+```
+
+### External links
+
+```yaml
+services:
+  web:
+    external_links:
+      - redis_1
+      - project_db_1:mysql
+```
+
+### Healthcheck
+
+```yaml
+    # declare service healthy when `test` command succeed
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+```
+
+### Hosts
+
+```yaml
+services:
+  web:
+    extra_hosts:
+      - "somehost:192.168.1.100"
+```
+
+### Network
+
+```yaml
+# creates a custom network called `frontend`
+networks:
+  frontend:
+```
+
+### External network
+
+```yaml
+# join a pre-existing network
+networks:
+  default:
+    external:
+      name: frontend
+```
+
+### Volume
+
+```yaml
+# mount host paths or named volumes, specified as sub-options to a service
+  db:
+    image: postgres:latest
+    volumes:
+      - "/var/run/postgres/postgres.sock:/var/run/postgres/postgres.sock"
+      - "dbdata:/var/lib/postgresql/data"
+
+volumes:
+  dbdata:
+```
+
+### User
+
+```yaml
+# specifying user
+user: root
+```
+
+```yaml
+# specifying both user and group with ids
+user: 0:0
+```
+
+
+### Benefits:
+
+* Single host deployment - This means you can run everything on a single piece of hardware
+* Quick and easy configuration - Due to YAML scripts
+* High productivity - Docker Compose reduces the time it takes to perform tasks
+* Security - All the containers are isolated from each other, reducing the threat landscape
+
+### Basic Commands
+
+```shell
+docker-compose start
+docker-compose stop
+docker-compose pause
+docker-compose unpause
+docker-compose ps
+docker-compose up
+docker-compose down
+```
+
