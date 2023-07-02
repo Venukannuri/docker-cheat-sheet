@@ -29,7 +29,6 @@ Learn Docker for Beginners
     - **[Supports variables and moving a composition between environments](#supports-variables-and-moving-a-composition-between-environments)**
     - **[Basic Example](#basic-example)**
     - **[Benefits](#benefits)**
-    - **[Basic Commands](#basic-commands)**
 
 # Introduction
 
@@ -582,6 +581,16 @@ docker-compose up
 docker-compose down
 ```
 
+```shell
+docker-compose start
+docker-compose stop
+docker-compose pause
+docker-compose unpause
+docker-compose ps
+docker-compose up
+docker-compose down
+```
+
 ### Building
 
 ```yaml
@@ -812,15 +821,4 @@ user: 0:0
 * High productivity - Docker Compose reduces the time it takes to perform tasks
 * Security - All the containers are isolated from each other, reducing the threat landscape
 
-### Basic Commands
-
-```shell
-docker-compose start
-docker-compose stop
-docker-compose pause
-docker-compose unpause
-docker-compose ps
-docker-compose up
-docker-compose down
-```
 
